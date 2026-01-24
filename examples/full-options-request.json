@@ -1,0 +1,32 @@
+{
+    "url": "https://www.google.com/search?q=playwright+browser+automation",
+    "render": {
+        "wait_until": "networkidle",
+        "timeout_ms": 60000,
+        "javascript": true,
+        "scroll": {
+            "enabled": true,
+            "max_scrolls": 10,
+            "delay_ms": 800
+        }
+    },
+    "browser": {
+        "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36",
+        "viewport": {
+            "width": 1920,
+            "height": 1080
+        },
+        "locale": "en-US",
+        "timezone": "America/New_York"
+    },
+    "proxy": {
+        "server": "http://proxy.example.com:8080",
+        "username": "user",
+        "password": "pass",
+        "rotate": true
+    },
+    "debug": {
+        "screenshot": true,
+        "har": false
+    }
+}

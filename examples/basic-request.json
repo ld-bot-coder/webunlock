@@ -1,0 +1,7 @@
+{
+    "url": "https://example.com",
+    "render": {
+        "wait_until": "networkidle",
+        "timeout_ms": 30000
+    }
+}

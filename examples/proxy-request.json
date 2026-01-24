@@ -1,0 +1,13 @@
+{
+    "url": "https://httpbin.org/ip",
+    "render": {
+        "wait_until": "networkidle",
+        "timeout_ms": 30000
+    },
+    "proxy": {
+        "server": "http://your-proxy-host:8080",
+        "username": "your_username",
+        "password": "your_password",
+        "rotate": false
+    }
+}

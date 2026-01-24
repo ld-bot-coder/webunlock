@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Render API - Visual Preview</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1a73e8;
+            --primary-dark: #1557b0;
+            --bg: #0f0f0f;
+            --surface: #1a1a1a;
+            --surface-light: #2a2a2a;
+            --text: #ffffff;
+            --text-muted: #888888;
+            --success: #34a853;
+            --error: #ea4335;
+            --warning: #fbbc04;
+            --border: #333333;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary), #4285f4);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 700;
+            background: linear-gradient(90deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: rgba(52, 168, 83, 0.1);
+            border: 1px solid rgba(52, 168, 83, 0.3);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--success);
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--success);
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .input-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+        }
+
+        .input-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .url-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 16px 20px;
+            padding-left: 48px;
+            background: var(--surface-light);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 16px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .url-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #222;
+        }
+
+        .url-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .render-btn {
+            padding: 16px 32px;
+            background: linear-gradient(135deg, var(--primary), #4285f4);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .render-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 115, 232, 0.4);
+        }
+
+        .render-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .options-row {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .option-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .option-group label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .option-group select {
+            padding: 8px 12px;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+        }
+
+        .results-section {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 24px;
+        }
+
+        @media (max-width: 1024px) {
+            .results-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .screenshot-panel {
+            background: var(--surface);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .screenshot-container {
+            padding: 20px;
+            min-height: 400px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .screenshot-placeholder {
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        .screenshot-placeholder svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.3;
+        }
+
+        .screenshot-img {
+            max-width: 100%;
+            border-radius: 8px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .meta-panel {
+            background: var(--surface);
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .meta-content {
+            padding: 20px;
+        }
+
+        .meta-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .meta-item:last-child {
+            border-bottom: none;
+        }
+
+        .meta-label {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .meta-value {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .meta-value.success {
+            color: var(--success);
+        }
+
+        .meta-value.error {
+            color: var(--error);
+        }
+
+        .meta-value.warning {
+            color: var(--warning);
+        }
+
+        .loading-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+            color: var(--text-muted);
+        }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error-message {
+            background: rgba(234, 67, 53, 0.1);
+            border: 1px solid rgba(234, 67, 53, 0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            color: var(--error);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .download-btn {
+            padding: 8px 16px;
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--border);
+        }
+
+        .url-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: var(--surface-light);
+            border-radius: 8px;
+            margin-bottom: 16px;
+            word-break: break-all;
+        }
+
+        .url-display a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .url-display a:hover {
+            text-decoration: underline;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge.success {
+            background: rgba(52, 168, 83, 0.15);
+            color: var(--success);
+        }
+
+        .badge.error {
+            background: rgba(234, 67, 53, 0.15);
+            color: var(--error);
+        }
+
+        .badge.warning {
+            background: rgba(251, 188, 4, 0.15);
+            color: var(--warning);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                            fill="currentColor" />
+                    </svg>
+                </div>
+                <h1>Web Render API</h1>
+            </div>
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                API Online
+            </div>
+        </header>
+
+        <section class="input-section">
+            <div class="input-row">
+                <div class="url-input-wrapper">
+                    <span class="input-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z" />
+                        </svg>
+                    </span>
+                    <input type="url" id="urlInput" class="url-input"
+                        placeholder="Enter URL to render (e.g., https://www.google.com/search?q=restaurants)"
+                        value="https://www.google.com/search?q=restaurants+in+hyderabad">
+                </div>
+                <button id="renderBtn" class="render-btn">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path
+                            d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z" />
+                    </svg>
+                    Render Page
+                </button>
+            </div>
+            <div class="options-row">
+                <div class="option-group">
+                    <label>Wait Until:</label>
+                    <select id="waitUntil">
+                        <option value="load">Load</option>
+                        <option value="domcontentloaded">DOM Content Loaded</option>
+                        <option value="networkidle">Network Idle</option>
+                    </select>
+                </div>
+                <div class="option-group">
+                    <label>Timeout:</label>
+                    <select id="timeout">
+                        <option value="15000">15 seconds</option>
+                        <option value="30000" selected>30 seconds</option>
+                        <option value="60000">60 seconds</option>
+                    </select>
+                </div>
+            </div>
+        </section>
+
+        <section class="results-section">
+            <div class="screenshot-panel">
+                <div class="panel-header">
+                    <span class="panel-title">Screenshot Preview</span>
+                    <button id="downloadBtn" class="download-btn" style="display: none;">
+                        Download Screenshot
+                    </button>
+                </div>
+                <div class="screenshot-container" id="screenshotContainer">
+                    <div class="screenshot-placeholder">
+                        <svg viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
+                        </svg>
+                        <p>Enter a URL and click "Render Page" to capture a screenshot</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="meta-panel">
+                <div class="panel-header">
+                    <span class="panel-title">Render Details</span>
+                </div>
+                <div class="meta-content" id="metaContent">
+                    <div class="meta-item">
+                        <span class="meta-label">Status</span>
+                        <span class="meta-value" id="metaStatus">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">HTTP Status</span>
+                        <span class="meta-value" id="metaHttpStatus">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Load Time</span>
+                        <span class="meta-value" id="metaLoadTime">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Page Title</span>
+                        <span class="meta-value" id="metaPageTitle">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">HTML Size</span>
+                        <span class="meta-value" id="metaHtmlSize">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">JS Rendered</span>
+                        <span class="meta-value" id="metaJsRendered">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">CAPTCHA Detected</span>
+                        <span class="meta-value" id="metaCaptcha">—</span>
+                    </div>
+                    <div class="meta-item">
+                        <span class="meta-label">Blocked</span>
+                        <span class="meta-value" id="metaBlocked">—</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000';
+
+        const urlInput = document.getElementById('urlInput');
+        const renderBtn = document.getElementById('renderBtn');
+        const waitUntilSelect = document.getElementById('waitUntil');
+        const timeoutSelect = document.getElementById('timeout');
+        const screenshotContainer = document.getElementById('screenshotContainer');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let currentScreenshot = null;
+
+        renderBtn.addEventListener('click', async () => {
+            const url = urlInput.value.trim();
+            if (!url) {
+                showError('Please enter a URL');
+                return;
+            }
+
+            try {
+                new URL(url);
+            } catch {
+                showError('Please enter a valid URL');
+                return;
+            }
+
+            await renderPage(url);
+        });
+
+        urlInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                renderBtn.click();
+            }
+        });
+
+        downloadBtn.addEventListener('click', () => {
+            if (currentScreenshot) {
+                const link = document.createElement('a');
+                link.href = currentScreenshot;
+                link.download = 'screenshot.png';
+                link.click();
+            }
+        });
+
+        async function renderPage(url) {
+            showLoading();
+            renderBtn.disabled = true;
+
+            const requestBody = {
+                url: url,
+                render: {
+                    wait_until: waitUntilSelect.value,
+                    timeout_ms: parseInt(timeoutSelect.value)
+                },
+                debug: {
+                    screenshot: true
+                }
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/v1/render`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    showResult(data);
+                } else {
+                    showError(data.errors?.[0]?.message || 'Render failed');
+                }
+            } catch (error) {
+                showError(`Connection error: ${error.message}`);
+            } finally {
+                renderBtn.disabled = false;
+            }
+        }
+
+        function showLoading() {
+            screenshotContainer.innerHTML = `
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Rendering page...</p>
+                </div>
+            `;
+            downloadBtn.style.display = 'none';
+            resetMeta();
+        }
+
+        function showError(message) {
+            screenshotContainer.innerHTML = `
+                <div class="error-message">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+                    </svg>
+                    ${message}
+                </div>
+            `;
+            downloadBtn.style.display = 'none';
+        }
+
+        function showResult(data) {
+            const screenshot = data.content?.screenshot;
+            const meta = data.meta;
+
+            if (screenshot) {
+                currentScreenshot = `data:image/png;base64,${screenshot}`;
+                screenshotContainer.innerHTML = `
+                    <img src="${currentScreenshot}" alt="Screenshot" class="screenshot-img">
+                `;
+                downloadBtn.style.display = 'block';
+            } else {
+                screenshotContainer.innerHTML = `
+                    <div class="screenshot-placeholder">
+                        <p>Screenshot not available</p>
+                    </div>
+                `;
+            }
+
+            // Update meta
+            if (meta) {
+                document.getElementById('metaStatus').innerHTML =
+                    `<span class="badge success">✓ Success</span>`;
+                document.getElementById('metaHttpStatus').textContent = meta.http_status || '—';
+                document.getElementById('metaLoadTime').textContent =
+                    meta.load_time_ms ? `${meta.load_time_ms}ms` : '—';
+                document.getElementById('metaPageTitle').textContent =
+                    meta.page_title || '—';
+                document.getElementById('metaHtmlSize').textContent =
+                    data.content?.html ? formatBytes(data.content.html.length) : '—';
+                document.getElementById('metaJsRendered').innerHTML =
+                    meta.js_rendered
+                        ? '<span class="badge success">Yes</span>'
+                        : '<span class="badge">No</span>';
+                document.getElementById('metaCaptcha').innerHTML =
+                    meta.captcha_detected
+                        ? '<span class="badge warning">Detected</span>'
+                        : '<span class="badge success">None</span>';
+                document.getElementById('metaBlocked').innerHTML =
+                    meta.blocked
+                        ? '<span class="badge error">Blocked</span>'
+                        : '<span class="badge success">No</span>';
+            }
+        }
+
+        function resetMeta() {
+            document.getElementById('metaStatus').textContent = '—';
+            document.getElementById('metaHttpStatus').textContent = '—';
+            document.getElementById('metaLoadTime').textContent = '—';
+            document.getElementById('metaPageTitle').textContent = '—';
+            document.getElementById('metaHtmlSize').textContent = '—';
+            document.getElementById('metaJsRendered').textContent = '—';
+            document.getElementById('metaCaptcha').textContent = '—';
+            document.getElementById('metaBlocked').textContent = '—';
+        }
+
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Check API status on load
+        async function checkApiStatus() {
+            try {
+                const response = await fetch(`${API_URL}/health`);
+                if (!response.ok) {
+                    document.querySelector('.status-badge').innerHTML = `
+                        <span class="status-dot" style="background: var(--error);"></span>
+                        API Offline
+                    `;
+                    document.querySelector('.status-badge').style.borderColor = 'rgba(234, 67, 53, 0.3)';
+                    document.querySelector('.status-badge').style.color = 'var(--error)';
+                }
+            } catch {
+                document.querySelector('.status-badge').innerHTML = `
+                    <span class="status-dot" style="background: var(--error);"></span>
+                    API Offline
+                `;
+                document.querySelector('.status-badge').style.borderColor = 'rgba(234, 67, 53, 0.3)';
+                document.querySelector('.status-badge').style.color = 'var(--error)';
+            }
+        }
+
+        checkApiStatus();
+    </script>
+</body>
+
+</html>
