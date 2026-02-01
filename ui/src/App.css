@@ -73,6 +73,65 @@ header h1 {
   font-size: 16px;
 }
 
+/* Tabs */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 32px;
+  background: var(--surface);
+  padding: 6px;
+  border-radius: 16px;
+  border: 1px solid var(--border);
+}
+
+.tab {
+  flex: 1;
+  padding: 14px 24px;
+  font-size: 15px;
+  font-weight: 500;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.tab svg {
+  width: 20px;
+  height: 20px;
+}
+
+.tab:hover {
+  color: var(--text);
+  background: var(--surface-2);
+}
+
+.tab.active {
+  background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+  color: white;
+}
+
+.tab-content {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .search-box {
   display: flex;
   gap: 12px;
@@ -134,14 +193,16 @@ header h1 {
 .spinner {
   width: 20px;
   height: 20px;
-  border: 2px solid rgba(255,255,255,0.3);
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-top-color: white;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .error {
@@ -196,13 +257,27 @@ header h1 {
 }
 
 @keyframes pulse-ring {
-  0% { transform: scale(0.5); opacity: 1; }
-  100% { transform: scale(1.2); opacity: 0; }
+  0% {
+    transform: scale(0.5);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.2);
+    opacity: 0;
+  }
 }
 
 @keyframes pulse-dot {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
 }
 
 .loading-container p {
@@ -297,6 +372,98 @@ header h1 {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
 }
 
+/* Search Results */
+.search-results {
+  background: var(--surface);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.results-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+}
+
+.results-header h2 {
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.total-results {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+.results-list {
+  padding: 12px;
+}
+
+.search-result-item {
+  display: flex;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 12px;
+  transition: background 0.2s ease;
+}
+
+.search-result-item:hover {
+  background: var(--surface-2);
+}
+
+.result-position {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  background: var(--surface-2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--primary);
+}
+
+.result-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.result-title {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--primary);
+  text-decoration: none;
+  display: block;
+  margin-bottom: 4px;
+  transition: color 0.2s ease;
+}
+
+.result-title:hover {
+  color: #60a5fa;
+  text-decoration: underline;
+}
+
+.result-url {
+  font-size: 13px;
+  color: var(--success);
+  margin-bottom: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.result-snippet {
+  font-size: 14px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin: 0;
+}
+
 .empty-state {
   text-align: center;
   padding: 80px 24px;
@@ -330,25 +497,40 @@ header h1 {
 .empty-state p {
   color: var(--text-muted);
   font-size: 15px;
+  margin-bottom: 8px;
+}
+
+.empty-state .note {
+  font-size: 13px;
+  color: #f59e0b;
+  margin-top: 16px;
 }
 
 @media (max-width: 640px) {
   .search-box {
     flex-direction: column;
   }
-  
+
   .search-box button {
     width: 100%;
     justify-content: center;
   }
-  
+
   header h1 {
     font-size: 24px;
   }
-  
+
   .result-header {
     flex-direction: column;
     gap: 12px;
     align-items: flex-start;
+  }
+
+  .tabs {
+    flex-direction: column;
+  }
+
+  .tab {
+    width: 100%;
   }
 }
