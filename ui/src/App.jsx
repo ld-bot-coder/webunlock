@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 
-const API_URL = '' // Uses Vite proxy
+const API_URL = 'https://web-render-api.onrender.com' // Deployed backend
 
 function App() {
   const [url, setUrl] = useState('')
