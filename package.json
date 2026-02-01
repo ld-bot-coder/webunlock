@@ -28,7 +28,7 @@
     "fastify": "^4.28.1",
     "pino": "^8.19.0",
     "pino-pretty": "^11.0.0",
-    "playwright": "^1.42.1",
+    "playwright": "1.49.1",
     "uuid": "^9.0.1",
     "zod": "^3.22.4"
   },

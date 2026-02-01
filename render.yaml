@@ -1,0 +1,26 @@
+# Render Blueprint Specification
+# Documentation: https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: web-render-api
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    region: oregon # or singapore for closer to India
+    plan: starter # 1GB RAM - required for Playwright
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: LOG_LEVEL
+        value: info
+      - key: POOL_MIN_BROWSERS
+        value: 1
+      - key: POOL_MAX_BROWSERS
+        value: 2
+      - key: POOL_MAX_CONTEXTS
+        value: 3
+      - key: CORS_ENABLED
+        value: true
