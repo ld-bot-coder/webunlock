@@ -1,7 +1,7 @@
 # Fly.io Configuration
 # Documentation: https://fly.io/docs/reference/configuration/
 
-app = "web-render-api"
+app = "webunlock-api-rahul"
 primary_region = "sin"  # Singapore - closest to India
 
 [build]
