@@ -3,16 +3,11 @@
  * Manages pre-launched Chromium instances for efficient reuse
  */
 
-import { chromium as playwrightChromium, Browser } from 'playwright';
-import { chromium } from 'playwright-extra';
-import stealthPlugin from 'puppeteer-extra-plugin-stealth';
+import { chromium, Browser } from 'playwright';
 import { v4 as uuid } from 'uuid';
 import type { BrowserInstance, PoolStatus, BrowserConfig, ProxyConfig } from '../types/index.js';
 import { config as appConfig } from '../config/index.js';
 import { createContext, type CreatedContext } from './contextFactory.js';
-
-// Apply stealth plugin
-chromium.use(stealthPlugin());
 
 // Re-export for use in other modules
 export type { CreatedContext };
