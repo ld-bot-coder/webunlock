@@ -11,6 +11,7 @@ import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { getBrowserPool, shutdownBrowserPool } from './browser/browserPool.js';
 import { handleRender, handleHealth, handlePoolStatus } from './api/render.controller.js';
+import { handleGoogleSearch } from './api/search.controller.js';
 import { config } from './config/index.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -59,6 +60,9 @@ function setupRoutes(): void {
     // Main render endpoint
     app.post('/v1/render', handleRender);
 
+    // Google Search endpoint
+    app.post('/v1/search', handleGoogleSearch);
+
     // Pool status (debug)
     app.get('/v1/pool/status', handlePoolStatus);
 
@@ -71,6 +75,7 @@ function setupRoutes(): void {
             ui: '/ui/index.html',
             endpoints: {
                 render: 'POST /v1/render',
+                search: 'POST /v1/search',
                 health: 'GET /health',
                 poolStatus: 'GET /v1/pool/status',
                 ui: 'GET /ui/index.html',
@@ -146,6 +151,7 @@ async function start(): Promise<void> {
         console.log(`[Server] Environment: ${process.env.NODE_ENV || 'development'}`);
         console.log('[Server] Endpoints:');
         console.log(`  - POST ${address}/v1/render`);
+        console.log(`  - POST ${address}/v1/search`);
         console.log(`  - GET  ${address}/health`);
         console.log(`  - GET  ${address}/v1/pool/status`);
 

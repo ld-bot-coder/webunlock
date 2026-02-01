@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 
-const API_URL = 'https://web-render-api.onrender.com' // Deployed backend
+const API_URL = 'http://localhost:3000' // Deployed backend
 
 function App() {
   const [url, setUrl] = useState('')

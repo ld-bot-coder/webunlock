@@ -92,19 +92,46 @@ export class BrowserPool {
         try {
             const browser = await chromium.launch({
                 headless: true,
+                channel: 'chrome', // Use actual Chrome instead of Chromium
                 args: [
+                    // Core anti-detection
                     '--disable-blink-features=AutomationControlled',
-                    '--disable-features=IsolateOrigins,site-per-process',
+                    '--disable-automation',
+                    '--disable-extensions-except=',
+                    '--disable-component-extensions-with-background-pages',
+
+                    // Remove headless indicators
+                    '--disable-features=IsolateOrigins,site-per-process,TranslateUI',
                     '--disable-site-isolation-trials',
-                    '--disable-web-security',
-                    '--disable-setuid-sandbox',
+                    '--disable-ipc-flooding-protection',
+
+                    // Performance/stability
                     '--no-sandbox',
+                    '--disable-setuid-sandbox',
                     '--disable-dev-shm-usage',
-                    '--disable-accelerated-2d-canvas',
                     '--disable-gpu',
-                    '--window-size=1920,1080',
-                    '--hide-scrollbars',
+                    '--no-first-run',
+                    '--no-default-browser-check',
+
+                    // Window settings
+                    '--window-size=1366,768',
+                    '--start-maximized',
+
+                    // Audio/Video
                     '--mute-audio',
+                    '--autoplay-policy=no-user-gesture-required',
+
+                    // Network
+                    '--disable-background-networking',
+                    '--disable-background-timer-throttling',
+                    '--disable-backgrounding-occluded-windows',
+                    '--disable-renderer-backgrounding',
+
+                    // Additional stealth
+                    '--disable-popup-blocking',
+                    '--ignore-certificate-errors',
+                    '--disable-infobars',
+                    '--lang=en-US,en',
                 ],
             });
 
