@@ -102,9 +102,14 @@ export class BrowserPool {
                     '--disable-dev-shm-usage',
                     '--disable-accelerated-2d-canvas',
                     '--disable-gpu',
-                    '--window-size=1920,1080',
+                    '--window-size=1280,720', // Reduced for memory
                     '--hide-scrollbars',
                     '--mute-audio',
+                    '--disable-extensions', // New low-mem flags
+                    '--disable-component-extensions-with-background-pages',
+                    '--disable-default-apps',
+                    '--no-zygote',
+                    '--single-process', // Critical for 512MB RAM
                 ],
             });
 
