@@ -7,7 +7,7 @@ services:
     runtime: docker
     dockerfilePath: ./Dockerfile
     region: oregon # or singapore for closer to India
-    plan: free # 512MB RAM
+    plan: starter # 1GB RAM - required for Playwright
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
@@ -17,12 +17,10 @@ services:
       - key: LOG_LEVEL
         value: info
       - key: POOL_MIN_BROWSERS
-        value: 0  # Don't keep any browser open
+        value: 1
       - key: POOL_MAX_BROWSERS
-        value: 1  # Strictly 1 browser
+        value: 2
       - key: POOL_MAX_CONTEXTS
-        value: 1  # Strictly 1 tab
-      - key: BROWSER_IDLE_TIMEOUT
-        value: 10000 # Close browser after 10s idle
+        value: 3
       - key: CORS_ENABLED
         value: true
