@@ -3,11 +3,16 @@
  * Manages pre-launched Chromium instances for efficient reuse
  */
 
-import { chromium, Browser } from 'playwright';
+import { chromium as playwrightChromium, Browser } from 'playwright';
+import { chromium } from 'playwright-extra';
+import stealthPlugin from 'puppeteer-extra-plugin-stealth';
 import { v4 as uuid } from 'uuid';
 import type { BrowserInstance, PoolStatus, BrowserConfig, ProxyConfig } from '../types/index.js';
 import { config as appConfig } from '../config/index.js';
 import { createContext, type CreatedContext } from './contextFactory.js';
+
+// Apply stealth plugin
+chromium.use(stealthPlugin());
 
 // Re-export for use in other modules
 export type { CreatedContext };
@@ -102,14 +107,9 @@ export class BrowserPool {
                     '--disable-dev-shm-usage',
                     '--disable-accelerated-2d-canvas',
                     '--disable-gpu',
-                    '--window-size=1280,720', // Reduced for memory
+                    '--window-size=1920,1080',
                     '--hide-scrollbars',
                     '--mute-audio',
-                    '--disable-extensions', // New low-mem flags
-                    '--disable-component-extensions-with-background-pages',
-                    '--disable-default-apps',
-                    '--no-zygote',
-                    '--single-process', // Critical for 512MB RAM
                 ],
             });
 
